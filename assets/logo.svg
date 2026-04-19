@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="WeatherApp logo">
+  <!-- Słońce -->
+  <circle cx="38" cy="20" r="10" fill="#FBBF24"/>
+  <!-- Promienie słońca -->
+  <g stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round">
+    <line x1="38" y1="6"  x2="38" y2="2"/>
+    <line x1="38" y1="34" x2="38" y2="38"/>
+    <line x1="24" y1="20" x2="20" y2="20"/>
+    <line x1="52" y1="20" x2="56" y2="20"/>
+    <line x1="28" y1="10" x2="25" y2="7"/>
+    <line x1="48" y1="30" x2="51" y2="33"/>
+    <line x1="48" y1="10" x2="51" y2="7"/>
+    <line x1="28" y1="30" x2="25" y2="33"/>
+  </g>
+  <!-- Główna chmura -->
+  <ellipse cx="28" cy="40" rx="16" ry="10" fill="#93C5FD"/>
+  <circle  cx="20" cy="42" r="8"  fill="#93C5FD"/>
+  <circle  cx="36" cy="42" r="7"  fill="#93C5FD"/>
+  <circle  cx="28" cy="36" r="10" fill="#93C5FD"/>
+</svg>

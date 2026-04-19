@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WeatherApp – sprawdź aktualną pogodę i prognozę na 5 dni dla dowolnego miasta na świecie.">
+  <title>WeatherApp – Prognoza Pogody</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-light">
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <nav class="nav-bar" aria-label="Nawigacja główna">
+
+      <!-- Logo -->
+      <div class="nav-brand">
+        <img src="assets/logo.svg" alt="WeatherApp – ikona słońca i chmury" class="nav-logo" width="28" height="28">
+        <span>WeatherApp</span>
+      </div>
+
+      <!-- Zakładki (tab bar) -->
+      <div class="tab-bar" role="tablist" aria-label="Sekcje aplikacji">
+        <button class="tab-btn active" data-tab="search"
+                role="tab" aria-selected="true" aria-controls="tab-search" id="tab-btn-search">
+          <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+          <span>Szukaj</span>
+        </button>
+        <button class="tab-btn" data-tab="weather"
+                role="tab" aria-selected="false" aria-controls="tab-weather" id="tab-btn-weather" disabled>
+          <i class="fas fa-sun" aria-hidden="true"></i>
+          <span>Pogoda</span>
+        </button>
+        <button class="tab-btn" data-tab="forecast"
+                role="tab" aria-selected="false" aria-controls="tab-forecast" id="tab-btn-forecast" disabled>
+          <i class="fas fa-calendar-days" aria-hidden="true"></i>
+          <span>Prognoza</span>
+        </button>
+        <button class="tab-btn" data-tab="favorites"
+                role="tab" aria-selected="false" aria-controls="tab-favorites" id="tab-btn-favorites">
+          <i class="fas fa-heart" aria-hidden="true"></i>
+          <span>Ulubione</span>
+        </button>
+        <button class="tab-btn" data-tab="settings"
+                role="tab" aria-selected="false" aria-controls="tab-settings" id="tab-btn-settings">
+          <i class="fas fa-sliders" aria-hidden="true"></i>
+          <span>Ustawienia</span>
+        </button>
+      </div>
+
+      <!-- Przełączniki -->
+      <div class="nav-controls">
+        <button id="unit-toggle" class="unit-btn" aria-label="Przełącz jednostkę temperatury">
+          °C / °F
+        </button>
+        <button id="theme-toggle" class="theme-btn" aria-label="Przełącz motyw ciemny/jasny">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+          <span id="theme-label">Ciemny</span>
+        </button>
+      </div>
+
+    </nav>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main id="main-content">
+
+    <!-- ========== ZAKŁADKA 1: Szukaj ========== -->
+    <div id="tab-search" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-search">
+
+      <section class="search-section" aria-labelledby="search-heading">
+        <div class="search-hero">
+          <h1 id="search-heading">
+            <i class="fas fa-cloud-sun" aria-hidden="true"></i>
+            Sprawdź pogodę
+          </h1>
+          <p class="search-subtitle">Wpisz nazwę miasta lub użyj swojej lokalizacji</p>
+
+          <form id="search-form" class="search-form" novalidate aria-label="Formularz wyszukiwania pogody">
+            <div class="search-input-wrapper">
+              <label for="city-input" class="sr-only">Nazwa miasta</label>
+              <input
+                type="text"
+                id="city-input"
+                class="search-input"
+                placeholder="np. Warszawa, Kraków, Gdańsk..."
+                autocomplete="off"
+                aria-autocomplete="list"
+                aria-controls="autocomplete-list"
+                aria-describedby="search-error"
+                minlength="2"
+                maxlength="60"
+              >
+              <button type="submit" id="search-btn" class="search-btn" aria-label="Szukaj pogody">
+                <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                <span>Szukaj</span>
+              </button>
+            </div>
+            <button type="button" id="geolocation-btn" class="geo-btn-full"
+                    aria-label="Użyj mojej lokalizacji GPS">
+              <i class="fas fa-location-crosshairs" aria-hidden="true"></i>
+              Użyj mojej lokalizacji
+            </button>
+            <p id="search-error" class="error-message" role="alert" aria-live="polite"></p>
+            <ul id="autocomplete-list" class="autocomplete-list"
+                role="listbox" aria-label="Podpowiedzi miast" hidden></ul>
+          </form>
+        </div>
+
+        <!-- Ostatnie wyszukiwania -->
+        <article class="recent-searches" id="recent-searches"
+                 aria-labelledby="recent-heading" hidden>
+          <h2 id="recent-heading">
+            <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
+            Ostatnie wyszukiwania
+          </h2>
+          <ul id="recent-list" class="recent-list" role="list" aria-label="Historia wyszukiwań"></ul>
+          <button id="clear-history" class="clear-btn" aria-label="Wyczyść historię wyszukiwań">
+            <i class="fas fa-trash" aria-hidden="true"></i> Wyczyść historię
+          </button>
+        </article>
+      </section>
+
+    </div><!-- /tab-search -->
+
+    <!-- ========== ZAKŁADKA 2: Pogoda ========== -->
+    <div id="tab-weather" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-weather" hidden>
+
+      <!-- Loader -->
+      <div id="loading" class="loading" hidden aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Pobieranie danych pogodowych...</p>
+      </div>
+
+      <section class="weather-section" id="weather" aria-labelledby="city-name" hidden>
+
+        <!-- Pasek lokalizacji + odśwież -->
+        <div class="location-bar">
+          <div class="location-info">
+            <i class="fas fa-location-dot" aria-hidden="true"></i>
+            <h2 id="city-name" class="city-name">–</h2>
+          </div>
+          <div class="location-meta">
+            <p id="weather-date" class="weather-date"></p>
+            <button id="fav-toggle-btn" class="fav-toggle-btn" aria-label="Dodaj do ulubionych">
+              <i class="fas fa-heart" aria-hidden="true"></i>
+              <span id="fav-toggle-label">Dodaj do ulubionych</span>
+            </button>
+            <button id="refresh-btn" class="refresh-btn" aria-label="Odśwież dane pogodowe">
+              <i class="fas fa-rotate-right" aria-hidden="true"></i>
+              <span>Odśwież</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Główna karta pogody -->
+        <article class="current-weather card" id="current-weather-card">
+
+          <!-- Temperatura + ikona -->
+          <div class="weather-main">
+            <div class="temperature-block">
+              <span id="temp-value" class="temp-big" aria-label="Temperatura">–</span>
+              <span id="display-unit" class="temp-unit">°C</span>
+            </div>
+            <div class="weather-icon-block">
+              <span id="weather-emoji" class="weather-emoji" role="img" aria-label="Stan pogody"></span>
+              <p id="weather-description" class="weather-description"></p>
+            </div>
+          </div>
+
+          <!-- Szczegóły -->
+          <div class="weather-details" role="list" aria-label="Szczegóły pogody">
+            <div class="detail-card" role="listitem">
+              <i class="fas fa-droplet" aria-hidden="true"></i>
+              <span class="detail-label">Wilgotność</span>
+              <strong id="humidity" class="detail-value">–</strong>
+            </div>
+            <div class="detail-card" role="listitem">
+              <i class="fas fa-wind" aria-hidden="true"></i>
+              <span class="detail-label">Wiatr</span>
+              <strong id="wind-speed" class="detail-value">–</strong>
+            </div>
+            <div class="detail-card" role="listitem">
+              <i class="fas fa-temperature-half" aria-hidden="true"></i>
+              <span class="detail-label">Odczuwalna</span>
+              <strong id="feels-like" class="detail-value">–</strong>
+            </div>
+            <div class="detail-card" role="listitem">
+              <i class="fas fa-cloud-rain" aria-hidden="true"></i>
+              <span class="detail-label">Opady</span>
+              <strong id="precipitation" class="detail-value">–</strong>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- Przycisk do przejścia na prognozę -->
+        <button class="goto-forecast-btn" id="goto-forecast" aria-label="Przejdź do prognozy 5-dniowej">
+          <i class="fas fa-calendar-days" aria-hidden="true"></i>
+          Zobacz prognozę na 5 dni
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </button>
+
+      </section>
+    </div><!-- /tab-weather -->
+
+    <!-- ========== ZAKŁADKA 3: Prognoza ========== -->
+    <div id="tab-forecast" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-forecast" hidden>
+
+      <section class="forecast-section" id="forecast-section" aria-labelledby="forecast-heading">
+        <div class="forecast-header">
+          <h2 id="forecast-heading">
+            <i class="fas fa-calendar-days" aria-hidden="true"></i>
+            Prognoza na 5 dni
+          </h2>
+          <p class="forecast-city-label" id="forecast-city-label"></p>
+        </div>
+        <div class="forecast-grid" id="forecast-grid" role="list" aria-label="Prognoza pogody na 5 dni"></div>
+      </section>
+
+    </div><!-- /tab-forecast -->
+
+    <!-- ========== ZAKŁADKA 4: Ulubione ========== -->
+    <div id="tab-favorites" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-favorites" hidden>
+
+      <section class="favorites-section" aria-labelledby="favorites-heading">
+        <div class="favorites-header">
+          <h2 id="favorites-heading">
+            <i class="fas fa-heart" aria-hidden="true"></i>
+            Ulubione miasta
+          </h2>
+          <p class="favorites-count" id="favorites-count"></p>
+        </div>
+
+        <!-- Stan pusty -->
+        <div class="favorites-empty" id="favorites-empty">
+          <i class="fas fa-heart-crack" aria-hidden="true"></i>
+          <p>Nie masz jeszcze ulubionych miast.</p>
+          <p>Wyszukaj miasto i kliknij <strong>Dodaj do ulubionych</strong>.</p>
+          <button class="goto-search-btn" id="goto-search">
+            <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+            Przejdź do wyszukiwania
+          </button>
+        </div>
+
+        <!-- Siatka ulubionych kart -->
+        <div class="favorites-grid" id="favorites-grid" role="list"
+             aria-label="Lista ulubionych miast"></div>
+      </section>
+
+    </div><!-- /tab-favorites -->
+
+    <!-- ========== ZAKŁADKA 5: Ustawienia ========== -->
+    <div id="tab-settings" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-settings" hidden>
+
+      <section class="settings-section" aria-labelledby="settings-heading">
+        <div class="settings-header">
+          <h2 id="settings-heading">
+            <i class="fas fa-sliders" aria-hidden="true"></i>
+            Ustawienia
+          </h2>
+          <p class="settings-subtitle">Twoje preferencje zapisywane lokalnie w przeglądarce</p>
+        </div>
+
+        <!-- Potwierdzenie zapisu -->
+        <div id="settings-success" class="settings-success" hidden role="alert" aria-live="polite">
+          <i class="fas fa-circle-check" aria-hidden="true"></i>
+          Ustawienia zostały zapisane!
+        </div>
+
+        <form id="settings-form" class="settings-form" novalidate
+              aria-label="Formularz ustawień aplikacji">
+
+          <!-- Pole 1: Imię -->
+          <div class="settings-field">
+            <label for="settings-name" class="settings-label">
+              <i class="fas fa-user" aria-hidden="true"></i>
+              Imię / Nick
+            </label>
+            <input
+              type="text"
+              id="settings-name"
+              class="settings-input"
+              placeholder="np. Jan123"
+              autocomplete="given-name"
+              minlength="2"
+              maxlength="40"
+              aria-describedby="settings-name-hint settings-name-error"
+            >
+            <p class="settings-hint" id="settings-name-hint">
+              Wyświetlane jako powitanie na stronie głównej.
+            </p>
+            <p class="settings-field-error" id="settings-name-error" role="alert" aria-live="polite"></p>
+          </div>
+
+          <!-- Pole 2: Domyślne miasto -->
+          <div class="settings-field settings-city-wrapper">
+            <label for="settings-city" class="settings-label">
+              <i class="fas fa-city" aria-hidden="true"></i>
+              Domyślne miasto
+            </label>
+            <div class="settings-city-field">
+              <input
+                type="text"
+                id="settings-city"
+                class="settings-input"
+                placeholder="np. Warszawa"
+                autocomplete="off"
+                minlength="2"
+                maxlength="60"
+                aria-autocomplete="list"
+                aria-controls="settings-city-list"
+                aria-describedby="settings-city-hint settings-city-error"
+              >
+              <ul id="settings-city-list" class="autocomplete-list settings-autocomplete"
+                  role="listbox" aria-label="Podpowiedzi miast" hidden></ul>
+            </div>
+            <p class="settings-hint" id="settings-city-hint">
+              Pogoda dla tego miasta zostanie załadowana automatycznie przy starcie.
+            </p>
+            <p class="settings-field-error" id="settings-city-error" role="alert" aria-live="polite"></p>
+          </div>
+
+          <!-- Pole 3: Notatka -->
+          <div class="settings-field">
+            <label for="settings-note" class="settings-label">
+              <i class="fas fa-pen-to-square" aria-hidden="true"></i>
+              Notatka
+            </label>
+            <textarea
+              id="settings-note"
+              class="settings-textarea"
+              placeholder="Wpisz dowolną notatkę, np. ulubione miasta do sprawdzenia..."
+              rows="4"
+              maxlength="300"
+              aria-describedby="settings-note-hint settings-note-error"
+            ></textarea>
+            <p class="settings-hint" id="settings-note-hint">
+              Maksymalnie 300 znaków. <span id="settings-note-count">0</span>/300
+            </p>
+            <p class="settings-field-error" id="settings-note-error" role="alert" aria-live="polite"></p>
+          </div>
+
+          <div class="settings-actions">
+            <button type="submit" class="settings-save-btn" id="settings-save">
+              <i class="fas fa-floppy-disk" aria-hidden="true"></i>
+              Zapisz ustawienia
+            </button>
+            <button type="button" class="settings-reset-btn" id="settings-reset">
+              <i class="fas fa-rotate-left" aria-hidden="true"></i>
+              Resetuj
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+    </div><!-- /tab-settings -->
+
+    <!-- Modal szczegółów dnia -->
+    <div id="day-modal" class="modal-overlay" role="dialog" aria-modal="true"
+         aria-labelledby="modal-title" hidden>
+      <div class="modal-content">
+        <button class="modal-close" id="modal-close" aria-label="Zamknij okno szczegółów">
+          <i class="fas fa-xmark" aria-hidden="true"></i>
+        </button>
+        <h3 id="modal-title" class="modal-title">Szczegóły dnia</h3>
+        <div id="modal-body" class="modal-body"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>
+        <i class="fas fa-cloud-sun" aria-hidden="true"></i>
+        <strong>WeatherApp</strong> &copy; 2026 | Projekt Zespołowy
+      </p>
+      <p>
+        <strong>Autorzy:</strong> Andrzej Mickiewicz | Jakub Wszałkowski | Nathaniel Kołecki | Przemysław Przesmycki | Dominika Blimel
+      </p>
+      <p class="footer-api">
+        Dane: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+        &amp; <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener noreferrer">Nominatim</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
