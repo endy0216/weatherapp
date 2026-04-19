@@ -7,7 +7,7 @@ Aplikacja webowa wyświetlająca aktualną pogodę i prognozę na 5 dni dla dowo
 - Andrzej Mickiewicz (Team Leader) – GitHub: @endy0216
 - Jakub Wszałkowski (Frontend Dev 1) – GitHub: @kuba00272
 - Nathaniel Kołecki (JavaScript Dev) – GitHub: @nathanielkolecki-ops
-- Przemysław Przesmycki (Frontend Dev 2) – GitHub: @username
+- Przemysław Przesmycki (Frontend Dev 2) – GitHub: @loniack243
 
 ## Technologie
 
