@@ -71,7 +71,7 @@ Aplikacja webowa wyświetlająca aktualną pogodę i prognozę na 5 dni dla dowo
 
 1. Sklonuj repozytorium:
    ```bash
-   git clone https://github.com/username/weatherapp.git
+   git clone https://github.com/endy0216/weatherapp.git
    ```
 2. Otwórz `index.html` w przeglądarce (Chrome lub Firefox)
 
