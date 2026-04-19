@@ -79,7 +79,7 @@ Aplikacja webowa wyświetlająca aktualną pogodę i prognozę na 5 dni dla dowo
 
 ## Link do live demo
 
-[https://username.github.io/weatherapp](https://username.github.io/weatherapp)
+[https://endy0216.github.io/weatherapp/](https://endy0216.github.io/weatherapp/)
 
 ## Screenshots
 
